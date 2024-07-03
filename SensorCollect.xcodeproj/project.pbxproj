@@ -17,6 +17,7 @@
 		E78500C52C33D3EF008A80DB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E78500C42C33D3EF008A80DB /* Preview Assets.xcassets */; };
 		E78500C82C33D3EF008A80DB /* SensorCollectWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = E78500BB2C33D3EE008A80DB /* SensorCollectWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E7CE0AB42C35457D007BB7C6 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB32C35457D007BB7C6 /* DetailView.swift */; };
+		E7CE0AB92C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB72C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		E78500C12C33D3EF008A80DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E78500C42C33D3EF008A80DB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E7CE0AB32C35457D007BB7C6 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		E7CE0AB82C35A0E1007BB7C6 /* SensorDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SensorDataModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				E78500AB2C33C271008A80DB /* ContentView.swift */,
 				E78500AD2C33C272008A80DB /* Assets.xcassets */,
 				E78500AF2C33C272008A80DB /* Preview Content */,
+				E7CE0AB72C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld */,
 			);
 			path = SensorCollect;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E78500AC2C33C271008A80DB /* ContentView.swift in Sources */,
+				E7CE0AB92C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld in Sources */,
 				E7CE0AB42C35457D007BB7C6 /* DetailView.swift in Sources */,
 				E78500AA2C33C271008A80DB /* SensorCollectApp.swift in Sources */,
 			);
@@ -538,6 +542,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		E7CE0AB72C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E7CE0AB82C35A0E1007BB7C6 /* SensorDataModel.xcdatamodel */,
+			);
+			currentVersion = E7CE0AB82C35A0E1007BB7C6 /* SensorDataModel.xcdatamodel */;
+			path = SensorDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = E785009E2C33C271008A80DB /* Project object */;
 }
