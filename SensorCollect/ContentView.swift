@@ -1,5 +1,6 @@
 import SwiftUI
 import WatchConnectivity
+import UniformTypeIdentifiers
 
 class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     func sessionDidBecomeInactive(_ session: WCSession) {}
@@ -15,7 +16,7 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
             session.activate()
         }
     }
-
+    
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
             print("WCSession activation failed with error: \(error.localizedDescription)")
@@ -23,7 +24,7 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
         }
         print("WCSession activated with state: \(activationState.rawValue)")
     }
-
+    
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
             for (timestamp, data) in message {
@@ -37,12 +38,13 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
 
 struct ContentView: View {
     @StateObject private var watchSessionManager = WatchSessionManager()
-    @State private var isEditing = false // 是否处于编辑模式
-    @State private var selectedItems: Set<String> = [] // 存储选中的条目
-    @State private var showDeleteConfirmation = false // 是否显示删除确认弹窗
-    @State private var showingExportAlert = false // 导出完成提示
-    @State private var exportedPath = "" // 导出的路径
-    @State private var exportMessage = "" // 导出提示信息
+    @State private var isEditing = false
+    @State private var selectedItems: Set<String> = []
+    @State private var showDeleteConfirmation = false
+    @State private var showingExportAlert = false
+    @State private var exportedPath = ""
+    @State private var exportMessage = ""
+    @State private var showDocumentPicker = false
     
     var body: some View {
         NavigationView {
@@ -76,13 +78,10 @@ struct ContentView: View {
                             }
                         }
                     }
-                    
-                    
-                    
                     if isEditing {
                         ToolbarItem(placement: .bottomBar) {
                             Button(action: {
-                                exportToCSV()
+                                showDocumentPicker = true
                             }) {
                                 Image(systemName: "square.and.arrow.up")
                             }
@@ -116,9 +115,21 @@ struct ContentView: View {
                 Alert(title: Text("Export Successful"), message: Text("Files exported to: \(exportedPath)"), dismissButton: .default(Text("OK")))
             }
         }
+        .fileExporter(isPresented: $showDocumentPicker, document: ExportedCSVDocument(selectedItems: selectedItems, savedData: watchSessionManager.savedData), contentType: .folder, defaultFilename: "SensorCollect") { result in
+            switch result {
+            case .success(let url):
+                exportedPath = url.path
+                exportMessage = "Files exported successfully to \(exportedPath)"
+                showingExportAlert = true
+            case .failure(let error):
+                exportMessage = "Export failed: \(error.localizedDescription)"
+                showingExportAlert = true
+            }
+            selectedItems.removeAll()
+            isEditing = false
+        }
     }
     
-    // 切换选择状态
     func toggleSelection(for timestamp: String) {
         if selectedItems.contains(timestamp) {
             selectedItems.remove(timestamp)
@@ -127,7 +138,6 @@ struct ContentView: View {
         }
     }
     
-    // 删除选中的条目
     func deleteSelectedItems() {
         for timestamp in selectedItems {
             watchSessionManager.savedData.removeValue(forKey: timestamp)
@@ -135,49 +145,38 @@ struct ContentView: View {
         selectedItems.removeAll()
         isEditing = false
     }
+}
+
+
+struct ExportedCSVDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.folder] }
+    var selectedItems: Set<String>
+    var savedData: [String: [[String: Double]]]
     
-    // 删除单个条目
-    func deleteItem(at offsets: IndexSet) {
-        let sortedKeys = watchSessionManager.savedData.keys.sorted()
-        if let index = offsets.first {
-            let keyToRemove = sortedKeys[index]
-            watchSessionManager.savedData.removeValue(forKey: keyToRemove)
-        }
+    init(selectedItems: Set<String>, savedData: [String: [[String: Double]]]) {
+        self.selectedItems = selectedItems
+        self.savedData = savedData
     }
     
+    init(configuration: ReadConfiguration) throws {
+        self.selectedItems = []
+        self.savedData = [:]
+    }
     
-    func exportToCSV() {
-        let fileManager = FileManager.default
-        // 获取 Documents 文件夹路径
-        guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            exportMessage = "Error getting documents directory"
-            showingExportAlert = true
-            return
-        }
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let directoryWrapper = FileWrapper(directoryWithFileWrappers: [:])
         
         for timestamp in selectedItems {
-            guard let sensorData = watchSessionManager.savedData[timestamp] else { continue }
-            
-            let csvString = createCSVString(from: sensorData)
-            let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv" // 确保文件名没有非法字符
-            let fileURL = documentsURL.appendingPathComponent(fileName)
-            
-            do {
-                try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
-            } catch {
-                exportMessage = "Error writing CSV file: \(error)"
-                showingExportAlert = true
-                return
+            if let sensorData = savedData[timestamp] {
+                let csvString = createCSVString(from: sensorData)
+                let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv"
+                let data = Data(csvString.utf8)
+                let fileWrapper = FileWrapper(regularFileWithContents: data)
+                directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
             }
         }
         
-        // 导出完成后，取消选择并退出编辑模式
-        selectedItems.removeAll()
-        isEditing = false
-        
-        // 显示导出成功的弹窗
-        exportMessage = "Files exported successfully."
-        showingExportAlert = true
+        return directoryWrapper
     }
     
     func createCSVString(from sensorData: [[String: Double]]) -> String {
