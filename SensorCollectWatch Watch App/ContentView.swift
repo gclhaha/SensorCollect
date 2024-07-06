@@ -8,6 +8,7 @@
 import SwiftUI
 import WatchConnectivity
 import CoreMotion
+import WatchKit
 
 struct ContentView: View {
     @State private var timerRunning = false
@@ -79,7 +80,16 @@ struct ContentView: View {
         if WCSession.default.isReachable {
             let sensorData = motionManager.collectData()
             let timestamp = getCurrentTimestamp()
-            sendSensorDataInChunks(sensorData, timestamp: timestamp)
+            
+            let chunkSize = 50
+            let chunks = stride(from: 0, to: sensorData.count, by: chunkSize).map {
+                Array(sensorData[$0..<min($0 + chunkSize, sensorData.count)])
+            }
+            
+            for chunk in chunks {
+                let message: [String: Any] = ["timestamp": timestamp, "data": chunk]
+                WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: nil)
+            }
         }
     }
     
