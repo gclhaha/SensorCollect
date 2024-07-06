@@ -143,7 +143,7 @@ class WatchSessionDelegate: NSObject, ObservableObject, WCSessionDelegate {
 class MotionManager: NSObject, ObservableObject {
     private var motionManager = CMMotionManager()
     private var queue = OperationQueue()
-    private var sensorData: [[String: Double]] = []
+    private var sensorData: [[String: Any]] = []
     private var currentTime: Double = 0.0
 
     func startUpdates(timeElapsed: Double) {
@@ -152,8 +152,13 @@ class MotionManager: NSObject, ObservableObject {
             motionManager.deviceMotionUpdateInterval = 0.01
             motionManager.startDeviceMotionUpdates(to: queue) { (data, error) in
                 if let data = data {
-                    let sensorEntry: [String: Double] = [
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+                    let timestamp = dateFormatter.string(from: Date())
+                    
+                    let sensorEntry: [String: Any] = [
                         "time": self.currentTime,
+                        "timestamp": timestamp,
                         "accelerationX": data.userAcceleration.x,
                         "accelerationY": data.userAcceleration.y,
                         "accelerationZ": data.userAcceleration.z,
@@ -179,7 +184,7 @@ class MotionManager: NSObject, ObservableObject {
         motionManager.stopDeviceMotionUpdates()
     }
 
-    func collectData() -> [[String: Double]] {
+    func collectData() -> [[String: Any]] {
         let collectedData = sensorData
         sensorData.removeAll()
         return collectedData

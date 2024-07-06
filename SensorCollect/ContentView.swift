@@ -6,7 +6,7 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {}
     
-    @Published var savedData: [String: [[String: Double]]] = [:]
+    @Published var savedData: [String: [[String: Any]]] = [:]
     
     override init() {
         super.init()
@@ -27,7 +27,7 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
-            if let timestamp = message["timestamp"] as? String, let sensorData = message["data"] as? [[String: Double]] {
+            if let timestamp = message["timestamp"] as? String, let sensorData = message["data"] as? [[String: Any]] {
                 if self.savedData[timestamp] != nil {
                     self.savedData[timestamp]?.append(contentsOf: sensorData)
                 } else {
@@ -59,7 +59,7 @@ struct ContentView: View {
                                     toggleSelection(for: timestamp)
                                 }
                         }
-                        NavigationLink(destination: DetailView(timestamp: timestamp, sensorData: watchSessionManager.savedData[timestamp] ?? [])) {
+                        NavigationLink(destination: DetailView(timestamp: timestamp, sensorData: convertToDoubleDictionary(watchSessionManager.savedData[timestamp] ?? []))) {
                             Text(timestamp)
                         }
                     }
@@ -147,15 +147,26 @@ struct ContentView: View {
         selectedItems.removeAll()
         isEditing = false
     }
+    
+    func convertToDoubleDictionary(_ data: [[String: Any]]) -> [[String: Double]] {
+        return data.compactMap { dataPoint in
+            var doubleDataPoint: [String: Double] = [:]
+            for (key, value) in dataPoint {
+                if let doubleValue = value as? Double {
+                    doubleDataPoint[key] = doubleValue
+                }
+            }
+            return doubleDataPoint
+        }
+    }
 }
-
 
 struct ExportedCSVDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.folder] }
     var selectedItems: Set<String>
-    var savedData: [String: [[String: Double]]]
+    var savedData: [String: [[String: Any]]]
     
-    init(selectedItems: Set<String>, savedData: [String: [[String: Double]]]) {
+    init(selectedItems: Set<String>, savedData: [String: [[String: Any]]]) {
         self.selectedItems = selectedItems
         self.savedData = savedData
     }
@@ -173,7 +184,7 @@ struct ExportedCSVDocument: FileDocument {
                 let csvString = createCSVString(from: sensorData)
                 let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv"
                 let data = Data(csvString.utf8)
-                _ = FileWrapper(regularFileWithContents: data)
+                let fileWrapper = FileWrapper(regularFileWithContents: data)
                 directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
             }
         }
@@ -181,10 +192,10 @@ struct ExportedCSVDocument: FileDocument {
         return directoryWrapper
     }
     
-    func createCSVString(from sensorData: [[String: Double]]) -> String {
-        var csvString = "time,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,gravityX,gravityY,gravityZ,pitch,roll,yaw\n"
+    func createCSVString(from sensorData: [[String: Any]]) -> String {
+        var csvString = "time,timestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,gravityX,gravityY,gravityZ,pitch,roll,yaw\n"
         for dataPoint in sensorData {
-            csvString += "\(dataPoint["time"] ?? 0.0),\(dataPoint["accelerationX"] ?? 0.0),\(dataPoint["accelerationY"] ?? 0.0),\(dataPoint["accelerationZ"] ?? 0.0),\(dataPoint["rotationRateX"] ?? 0.0),\(dataPoint["rotationRateY"] ?? 0.0),\(dataPoint["rotationRateZ"] ?? 0.0),\(dataPoint["gravityX"] ?? 0.0),\(dataPoint["gravityY"] ?? 0.0),\(dataPoint["gravityZ"] ?? 0.0),\(dataPoint["pitch"] ?? 0.0),\(dataPoint["roll"] ?? 0.0),\(dataPoint["yaw"] ?? 0.0)\n"
+            csvString += "\(dataPoint["time"] ?? 0.0),\(dataPoint["timestamp"] ?? ""),\(dataPoint["accelerationX"] ?? 0.0),\(dataPoint["accelerationY"] ?? 0.0),\(dataPoint["accelerationZ"] ?? 0.0),\(dataPoint["rotationRateX"] ?? 0.0),\(dataPoint["rotationRateY"] ?? 0.0),\(dataPoint["rotationRateZ"] ?? 0.0),\(dataPoint["gravityX"] ?? 0.0),\(dataPoint["gravityY"] ?? 0.0),\(dataPoint["gravityZ"] ?? 0.0),\(dataPoint["pitch"] ?? 0.0),\(dataPoint["roll"] ?? 0.0),\(dataPoint["yaw"] ?? 0.0)\n"
         }
         return csvString
     }
