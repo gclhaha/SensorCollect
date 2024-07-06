@@ -27,8 +27,10 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
-            for (timestamp, data) in message {
-                if let sensorData = data as? [[String: Double]] {
+            if let timestamp = message["timestamp"] as? String, let sensorData = message["data"] as? [[String: Double]] {
+                if self.savedData[timestamp] != nil {
+                    self.savedData[timestamp]?.append(contentsOf: sensorData)
+                } else {
                     self.savedData[timestamp] = sensorData
                 }
             }
@@ -171,7 +173,7 @@ struct ExportedCSVDocument: FileDocument {
                 let csvString = createCSVString(from: sensorData)
                 let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv"
                 let data = Data(csvString.utf8)
-                let fileWrapper = FileWrapper(regularFileWithContents: data)
+                _ = FileWrapper(regularFileWithContents: data)
                 directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
             }
         }

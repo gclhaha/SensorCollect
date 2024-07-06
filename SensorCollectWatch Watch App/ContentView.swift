@@ -34,7 +34,6 @@ struct ContentView: View {
                 }
             }
             
-            
             Button(action: {
                 saveData()
                 resetTimer()
@@ -76,13 +75,11 @@ struct ContentView: View {
         timer = nil
     }
     
-    
     func saveData() {
         if WCSession.default.isReachable {
             let sensorData = motionManager.collectData()
             let timestamp = getCurrentTimestamp()
-            let message: [String: Any] = [timestamp: sensorData]
-            WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: nil)
+            sendSensorDataInChunks(sensorData, timestamp: timestamp)
         }
     }
     
@@ -98,6 +95,20 @@ struct ContentView: View {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return dateFormatter.string(from: Date())
+    }
+    
+    func sendSensorDataInChunks(_ sensorData: [[String: Double]], timestamp: String) {
+        let chunkSize = 100 // 每次发送100条数据
+        var chunkedData: [[String: Double]] = []
+        
+        for (index, dataPoint) in sensorData.enumerated() {
+            chunkedData.append(dataPoint)
+            if chunkedData.count == chunkSize || index == sensorData.count - 1 {
+                let message: [String: Any] = ["timestamp": timestamp, "data": chunkedData]
+                WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: nil)
+                chunkedData.removeAll()
+            }
+        }
     }
 }
 
