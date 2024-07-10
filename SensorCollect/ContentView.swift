@@ -2,41 +2,6 @@ import SwiftUI
 import WatchConnectivity
 import UniformTypeIdentifiers
 
-class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
-    func sessionDidBecomeInactive(_ session: WCSession) {}
-    func sessionDidDeactivate(_ session: WCSession) {}
-    
-    @Published var savedData: [String: [[String: Any]]] = [:]
-    
-    override init() {
-        super.init()
-        if WCSession.isSupported() {
-            let session = WCSession.default
-            session.delegate = self
-            session.activate()
-        }
-    }
-    
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        if let error = error {
-            print("WCSession activation failed with error: \(error.localizedDescription)")
-            return
-        }
-        print("WCSession activated with state: \(activationState.rawValue)")
-    }
-    
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        DispatchQueue.main.async {
-            if let timestamp = message["timestamp"] as? String, let sensorData = message["data"] as? [[String: Any]] {
-                if self.savedData[timestamp] != nil {
-                    self.savedData[timestamp]?.append(contentsOf: sensorData)
-                } else {
-                    self.savedData[timestamp] = sensorData
-                }
-            }
-        }
-    }
-}
 
 struct ContentView: View {
     @StateObject private var watchSessionManager = WatchSessionManager()
@@ -161,45 +126,7 @@ struct ContentView: View {
     }
 }
 
-struct ExportedCSVDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.folder] }
-    var selectedItems: Set<String>
-    var savedData: [String: [[String: Any]]]
-    
-    init(selectedItems: Set<String>, savedData: [String: [[String: Any]]]) {
-        self.selectedItems = selectedItems
-        self.savedData = savedData
-    }
-    
-    init(configuration: ReadConfiguration) throws {
-        self.selectedItems = []
-        self.savedData = [:]
-    }
-    
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let directoryWrapper = FileWrapper(directoryWithFileWrappers: [:])
-        
-        for timestamp in selectedItems {
-            if let sensorData = savedData[timestamp] {
-                let csvString = createCSVString(from: sensorData)
-                let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv"
-                let data = Data(csvString.utf8)
-                let fileWrapper = FileWrapper(regularFileWithContents: data)
-                directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
-            }
-        }
-        
-        return directoryWrapper
-    }
-    
-    func createCSVString(from sensorData: [[String: Any]]) -> String {
-        var csvString = "time,timestamp,accelerationX,accelerationY,accelerationZ,rotationRateX,rotationRateY,rotationRateZ,gravityX,gravityY,gravityZ,pitch,roll,yaw\n"
-        for dataPoint in sensorData {
-            csvString += "\(dataPoint["time"] ?? 0.0),\(dataPoint["timestamp"] ?? ""),\(dataPoint["accelerationX"] ?? 0.0),\(dataPoint["accelerationY"] ?? 0.0),\(dataPoint["accelerationZ"] ?? 0.0),\(dataPoint["rotationRateX"] ?? 0.0),\(dataPoint["rotationRateY"] ?? 0.0),\(dataPoint["rotationRateZ"] ?? 0.0),\(dataPoint["gravityX"] ?? 0.0),\(dataPoint["gravityY"] ?? 0.0),\(dataPoint["gravityZ"] ?? 0.0),\(dataPoint["pitch"] ?? 0.0),\(dataPoint["roll"] ?? 0.0),\(dataPoint["yaw"] ?? 0.0)\n"
-        }
-        return csvString
-    }
-}
+
 
 #Preview {
     ContentView()
