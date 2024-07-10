@@ -16,6 +16,10 @@
 		E78500C22C33D3EF008A80DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E78500C12C33D3EF008A80DB /* Assets.xcassets */; };
 		E78500C52C33D3EF008A80DB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E78500C42C33D3EF008A80DB /* Preview Assets.xcassets */; };
 		E78500C82C33D3EF008A80DB /* SensorCollectWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = E78500BB2C33D3EE008A80DB /* SensorCollectWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E7979C0A2C3E803D003B35E2 /* WatchSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C092C3E803A003B35E2 /* WatchSessionDelegate.swift */; };
+		E7979C0E2C3E8089003B35E2 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C0D2C3E807C003B35E2 /* MotionManager.swift */; };
+		E7979C102C3E8128003B35E2 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C0F2C3E8127003B35E2 /* WatchSessionManager.swift */; };
+		E7979C122C3E8180003B35E2 /* ExportedCSVDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C112C3E817E003B35E2 /* ExportedCSVDocument.swift */; };
 		E7CE0AB42C35457D007BB7C6 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB32C35457D007BB7C6 /* DetailView.swift */; };
 		E7CE0AB92C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB72C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -55,6 +59,10 @@
 		E78500BF2C33D3EE008A80DB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E78500C12C33D3EF008A80DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E78500C42C33D3EF008A80DB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E7979C092C3E803A003B35E2 /* WatchSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionDelegate.swift; sourceTree = "<group>"; };
+		E7979C0D2C3E807C003B35E2 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
+		E7979C0F2C3E8127003B35E2 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
+		E7979C112C3E817E003B35E2 /* ExportedCSVDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportedCSVDocument.swift; sourceTree = "<group>"; };
 		E7CE0AB32C35457D007BB7C6 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		E7CE0AB82C35A0E1007BB7C6 /* SensorDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SensorDataModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +106,8 @@
 		E78500A82C33C271008A80DB /* SensorCollect */ = {
 			isa = PBXGroup;
 			children = (
+				E7979C112C3E817E003B35E2 /* ExportedCSVDocument.swift */,
+				E7979C0F2C3E8127003B35E2 /* WatchSessionManager.swift */,
 				E7CE0AB32C35457D007BB7C6 /* DetailView.swift */,
 				E78500A92C33C271008A80DB /* SensorCollectApp.swift */,
 				E78500AB2C33C271008A80DB /* ContentView.swift */,
@@ -119,6 +129,8 @@
 		E78500BC2C33D3EE008A80DB /* SensorCollectWatch Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				E7979C0D2C3E807C003B35E2 /* MotionManager.swift */,
+				E7979C092C3E803A003B35E2 /* WatchSessionDelegate.swift */,
 				E78500BD2C33D3EE008A80DB /* SensorCollectWatchApp.swift */,
 				E78500BF2C33D3EE008A80DB /* ContentView.swift */,
 				E78500C12C33D3EF008A80DB /* Assets.xcassets */,
@@ -239,8 +251,10 @@
 			files = (
 				E78500AC2C33C271008A80DB /* ContentView.swift in Sources */,
 				E7CE0AB92C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld in Sources */,
+				E7979C122C3E8180003B35E2 /* ExportedCSVDocument.swift in Sources */,
 				E7CE0AB42C35457D007BB7C6 /* DetailView.swift in Sources */,
 				E78500AA2C33C271008A80DB /* SensorCollectApp.swift in Sources */,
+				E7979C102C3E8128003B35E2 /* WatchSessionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +262,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7979C0A2C3E803D003B35E2 /* WatchSessionDelegate.swift in Sources */,
+				E7979C0E2C3E8089003B35E2 /* MotionManager.swift in Sources */,
 				E78500C02C33D3EE008A80DB /* ContentView.swift in Sources */,
 				E78500BE2C33D3EE008A80DB /* SensorCollectWatchApp.swift in Sources */,
 			);

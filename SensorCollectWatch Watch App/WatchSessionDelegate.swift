@@ -1,5 +1,5 @@
 //
-//  WatchSessionDelegate.swift
+//  Untitled.swift
 //  SensorCollect
 //
 //  Created by gclhaha on 2024/7/10.
@@ -9,6 +9,7 @@ import SwiftUI
 import WatchConnectivity
 import CoreMotion
 import WatchKit
+
 
 class WatchSessionDelegate: NSObject, ObservableObject, WCSessionDelegate {
     func activateSession() {

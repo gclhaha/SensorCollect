@@ -1,10 +1,9 @@
 //
-//  MotionManager.swift
+//  MotionManager1.swift
 //  SensorCollect
 //
 //  Created by gclhaha on 2024/7/10.
 //
-
 import SwiftUI
 import WatchConnectivity
 import CoreMotion
