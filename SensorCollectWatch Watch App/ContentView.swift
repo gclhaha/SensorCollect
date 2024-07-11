@@ -88,7 +88,7 @@ struct ContentView: View {
             
             for chunk in chunks {
                 let message: [String: Any] = ["timestamp": timestamp, "data": chunk]
-                WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: nil)
+                WCSession.default.transferUserInfo(message)
             }
         }
     }

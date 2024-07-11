@@ -32,9 +32,9 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
         print("WCSession activated with state: \(activationState.rawValue)")
     }
     
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any]) {
         DispatchQueue.main.async {
-            if let timestamp = message["timestamp"] as? String, let sensorData = message["data"] as? [[String: Any]] {
+            if let timestamp = userInfo["timestamp"] as? String, let sensorData = userInfo["data"] as? [[String: Any]] {
                 if self.savedData[timestamp] != nil {
                     self.savedData[timestamp]?.append(contentsOf: sensorData)
                 } else {
