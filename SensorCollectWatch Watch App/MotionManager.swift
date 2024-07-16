@@ -18,6 +18,7 @@ class MotionManager: NSObject, ObservableObject {
     func startUpdates(timeElapsed: Double) {
         currentTime = timeElapsed
         if motionManager.isDeviceMotionAvailable {
+            print("sensor data is collecting")
             motionManager.deviceMotionUpdateInterval = 0.01
             motionManager.startDeviceMotionUpdates(to: queue) { (data, error) in
                 if let data = data {
@@ -41,7 +42,6 @@ class MotionManager: NSObject, ObservableObject {
                         "roll": data.attitude.roll,
                         "yaw": data.attitude.yaw
                     ]
-                    print(sensorEntry)
                     self.sensorData.append(sensorEntry)
                     self.currentTime += 0.01
                 }

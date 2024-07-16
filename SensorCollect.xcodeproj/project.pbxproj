@@ -20,6 +20,7 @@
 		E7979C0E2C3E8089003B35E2 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C0D2C3E807C003B35E2 /* MotionManager.swift */; };
 		E7979C102C3E8128003B35E2 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C0F2C3E8127003B35E2 /* WatchSessionManager.swift */; };
 		E7979C122C3E8180003B35E2 /* ExportedCSVDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7979C112C3E817E003B35E2 /* ExportedCSVDocument.swift */; };
+		E7A46D312C41147B00C2671F /* WorkoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A46D302C41147B00C2671F /* WorkoutManager.swift */; };
 		E7CE0AB42C35457D007BB7C6 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB32C35457D007BB7C6 /* DetailView.swift */; };
 		E7CE0AB92C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7CE0AB72C35A0E1007BB7C6 /* SensorDataModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -63,6 +64,8 @@
 		E7979C0D2C3E807C003B35E2 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		E7979C0F2C3E8127003B35E2 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		E7979C112C3E817E003B35E2 /* ExportedCSVDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportedCSVDocument.swift; sourceTree = "<group>"; };
+		E7A46D2F2C410DAC00C2671F /* SensorCollectWatch Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SensorCollectWatch Watch App.entitlements"; sourceTree = "<group>"; };
+		E7A46D302C41147B00C2671F /* WorkoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutManager.swift; sourceTree = "<group>"; };
 		E7CE0AB32C35457D007BB7C6 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		E7CE0AB82C35A0E1007BB7C6 /* SensorDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SensorDataModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,6 +132,8 @@
 		E78500BC2C33D3EE008A80DB /* SensorCollectWatch Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				E7A46D302C41147B00C2671F /* WorkoutManager.swift */,
+				E7A46D2F2C410DAC00C2671F /* SensorCollectWatch Watch App.entitlements */,
 				E7979C0D2C3E807C003B35E2 /* MotionManager.swift */,
 				E7979C092C3E803A003B35E2 /* WatchSessionDelegate.swift */,
 				E78500BD2C33D3EE008A80DB /* SensorCollectWatchApp.swift */,
@@ -264,6 +269,7 @@
 			files = (
 				E7979C0A2C3E803D003B35E2 /* WatchSessionDelegate.swift in Sources */,
 				E7979C0E2C3E8089003B35E2 /* MotionManager.swift in Sources */,
+				E7A46D312C41147B00C2671F /* WorkoutManager.swift in Sources */,
 				E78500C02C33D3EE008A80DB /* ContentView.swift in Sources */,
 				E78500BE2C33D3EE008A80DB /* SensorCollectWatchApp.swift in Sources */,
 			);
@@ -419,12 +425,12 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.b7e.SensorCollect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -459,12 +465,12 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.b7e.SensorCollect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -484,25 +490,31 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SensorCollectWatch Watch App/SensorCollectWatch Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SensorCollectWatch Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = MYKB3KD2J3;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=watchos*]" = MYKB3KD2J3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = SensorCollectWatch;
 				INFOPLIST_KEY_LSBackgroundOnly = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to read your workout data from HealthKit.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app needs to write your workout data to HealthKit.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.b7e.SensorCollect;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.b7e.SensorCollect.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "SensorCollect watchkitapp";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -517,6 +529,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "SensorCollectWatch Watch App/SensorCollectWatch Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -528,13 +541,15 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = SensorCollectWatch;
 				INFOPLIST_KEY_LSBackgroundOnly = NO;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app needs to read your workout data from HealthKit.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app needs to write your workout data to HealthKit.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.b7e.SensorCollect;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.b7e.SensorCollect.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
