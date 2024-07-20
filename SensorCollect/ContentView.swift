@@ -2,7 +2,6 @@ import SwiftUI
 import WatchConnectivity
 import UniformTypeIdentifiers
 
-
 struct ContentView: View {
     @StateObject private var watchSessionManager = WatchSessionManager()
     @State private var isEditing = false
@@ -81,15 +80,18 @@ struct ContentView: View {
             .alert(isPresented: $showingExportAlert) {
                 Alert(title: Text("Export Successful"), message: Text("Files exported to: \(exportedPath)"), dismissButton: .default(Text("OK")))
             }
+            .onAppear {
+                watchSessionManager.loadFromAppStorage()
+            }
         }
         .fileExporter(isPresented: $showDocumentPicker, document: ExportedCSVDocument(selectedItems: selectedItems, savedData: watchSessionManager.savedData), contentType: .folder, defaultFilename: "SensorCollect") { result in
             switch result {
             case .success(let url):
                 exportedPath = url.path
-                exportMessage = "Files exported successfully to \(exportedPath)"
+                exportMessage = "Files exported successfully to (exportedPath)"
                 showingExportAlert = true
-            case .failure(let error):
-                exportMessage = "Export failed: \(error.localizedDescription)"
+            case .failure(_):
+                exportMessage = "Export failed: (error.localizedDescription)"
                 showingExportAlert = true
             }
             selectedItems.removeAll()
@@ -125,8 +127,6 @@ struct ContentView: View {
         }
     }
 }
-
-
 
 #Preview {
     ContentView()

@@ -1,19 +1,13 @@
-//
-//  WatchSessionManager.swift
-//  SensorCollect
-//
-//  Created by gclhaha on 2024/7/10.
-//
-
 import SwiftUI
 import WatchConnectivity
-import UniformTypeIdentifiers
 
 class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
-    func sessionDidBecomeInactive(_ session: WCSession) {}
-    func sessionDidDeactivate(_ session: WCSession) {}
-    
-    @Published var savedData: [String: [[String: Any]]] = [:]
+    @AppStorage("sensorData") private var sensorDataStorage: Data = Data()
+    @Published var savedData: [String: [[String: Any]]] = [:] {
+        didSet {
+            saveToAppStorage()
+        }
+    }
     
     override init() {
         super.init()
@@ -22,7 +16,11 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
             session.delegate = self
             session.activate()
         }
+        loadFromAppStorage()
     }
+    
+    func sessionDidBecomeInactive(_ session: WCSession) {}
+    func sessionDidDeactivate(_ session: WCSession) {}
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
@@ -41,6 +39,21 @@ class WatchSessionManager: NSObject, ObservableObject, WCSessionDelegate {
                     self.savedData[timestamp] = sensorData
                 }
             }
+        }
+    }
+    
+    public func saveToAppStorage() {
+        do {
+            let data = try JSONSerialization.data(withJSONObject: savedData, options: [])
+            sensorDataStorage = data
+        } catch {
+            print("Failed to save data to AppStorage: \(error.localizedDescription)")
+        }
+    }
+    
+    public func loadFromAppStorage() {
+        if let json = try? JSONSerialization.jsonObject(with: sensorDataStorage, options: []) as? [String: [[String: Any]]] {
+            savedData = json
         }
     }
 }

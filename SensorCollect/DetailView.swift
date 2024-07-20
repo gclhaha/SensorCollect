@@ -1,11 +1,3 @@
-//
-//  DetailView.swift
-//  SensorCollect
-//
-//  Created by gclhaha on 2024/7/3.
-//
-
-
 import SwiftUI
 import Charts
 
