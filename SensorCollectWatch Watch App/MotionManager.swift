@@ -1,9 +1,6 @@
-//
-//  MotionManager1.swift
-//  SensorCollect
-//
-//  Created by gclhaha on 2024/7/10.
-//
+// MotionManager1.swift
+// SensorCollect
+
 import SwiftUI
 import WatchConnectivity
 import CoreMotion
@@ -14,21 +11,28 @@ class MotionManager: NSObject, ObservableObject {
     private var queue = OperationQueue()
     private var sensorData: [[String: Any]] = []
     private var currentTime: Double = 0.0
+    private var baseTimestamp: Date = Date()
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
 
     func startUpdates(timeElapsed: Double) {
         currentTime = timeElapsed
+        baseTimestamp = Date() // Reset base timestamp when updates start
+
         if motionManager.isDeviceMotionAvailable {
             print("sensor data is collecting")
             motionManager.deviceMotionUpdateInterval = 0.01
             motionManager.startDeviceMotionUpdates(to: queue) { (data, error) in
                 if let data = data {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
-                    let timestamp = dateFormatter.string(from: Date())
+                    let elapsedMilliseconds = Int(self.currentTime * 1000) % 1000
+                    let formattedTimestamp = self.dateFormatter.string(from: self.baseTimestamp) + String(format: ".%03d", elapsedMilliseconds)
                     
                     let sensorEntry: [String: Any] = [
                         "time": self.currentTime,
-                        "timestamp": timestamp,
+                        "timestamp": formattedTimestamp,
                         "accelerationX": data.userAcceleration.x,
                         "accelerationY": data.userAcceleration.y,
                         "accelerationZ": data.userAcceleration.z,
