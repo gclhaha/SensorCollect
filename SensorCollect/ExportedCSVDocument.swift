@@ -1,5 +1,4 @@
 import SwiftUI
-import WatchConnectivity
 import UniformTypeIdentifiers
 
 struct ExportedCSVDocument: FileDocument {
@@ -19,17 +18,33 @@ struct ExportedCSVDocument: FileDocument {
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let directoryWrapper = FileWrapper(directoryWithFileWrappers: [:])
-        
+        let dispatchGroup = DispatchGroup()
+
         for timestamp in selectedItems {
             if let sensorData = savedData[timestamp] {
-                let csvString = createCSVString(from: sensorData)
                 let fileName = "\(timestamp.replacingOccurrences(of: ":", with: "-")).csv"
-                let data = Data(csvString.utf8)
-                let fileWrapper = FileWrapper(regularFileWithContents: data)
-                directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
+                let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                
+                dispatchGroup.enter()
+                DispatchQueue.global(qos: .utility).async {
+                    do {
+                        try self.writeCSV(sensorData: sensorData, to: fileURL)
+                        
+                        let data = try Data(contentsOf: fileURL)
+                        let fileWrapper = FileWrapper(regularFileWithContents: data)
+                        DispatchQueue.main.async {
+                            directoryWrapper.addRegularFile(withContents: data, preferredFilename: fileName)
+                            dispatchGroup.leave()
+                        }
+                    } catch {
+                        print("Error writing to file: \(error.localizedDescription)")
+                        dispatchGroup.leave()
+                    }
+                }
             }
         }
-        
+
+        dispatchGroup.wait()
         return directoryWrapper
     }
     
@@ -49,5 +64,34 @@ struct ExportedCSVDocument: FileDocument {
         }
         
         return csvString
+    }
+    
+    func writeCSV(sensorData: [[String: Any]], to fileURL: URL) throws {
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
+            FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
+        } else {
+            try "".write(to: fileURL, atomically: true, encoding: .utf8)
+        }
+        
+        guard let fileHandle = try? FileHandle(forWritingTo: fileURL) else {
+            throw NSError(domain: "Unable to open file handle", code: 1, userInfo: nil)
+        }
+        
+        let batchSize = 1000
+        for i in stride(from: 0, to: sensorData.count, by: batchSize) {
+            let endIndex = min(i + batchSize, sensorData.count)
+            let batchData = sensorData[i..<endIndex]
+            let csvString = createCSVString(from: Array(batchData))
+            if let data = csvString.data(using: .utf8) {
+                fileHandle.write(data)
+            }
+        }
+        
+        fileHandle.closeFile()
+    }
+
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
 }
