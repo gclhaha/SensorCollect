@@ -44,6 +44,7 @@ struct ContentView: View {
                             }
                         }
                     }
+                    
                     if isEditing {
                         ToolbarItem(placement: .bottomBar) {
                             Button(action: {
@@ -83,15 +84,26 @@ struct ContentView: View {
             .onAppear {
                 watchSessionManager.loadFromAppStorage()
             }
+            .overlay(
+                HStack {
+                    Spacer()
+                    Text("SensorCollect")
+                        .font(.headline)
+                        .padding(.top, 10)
+                    Spacer()
+                }
+                .ignoresSafeArea(edges: .top),
+                alignment: .topTrailing
+            )
         }
         .fileExporter(isPresented: $showDocumentPicker, document: ExportedCSVDocument(selectedItems: selectedItems, savedData: watchSessionManager.savedData), contentType: .folder, defaultFilename: "SensorCollect") { result in
             switch result {
             case .success(let url):
                 exportedPath = url.path
-                exportMessage = "Files exported successfully to (exportedPath)"
+                exportMessage = "Files exported successfully to \(exportedPath)"
                 showingExportAlert = true
-            case .failure(_):
-                exportMessage = "Export failed: (error.localizedDescription)"
+            case .failure(let error):
+                exportMessage = "Export failed: \(error.localizedDescription)"
                 showingExportAlert = true
             }
             selectedItems.removeAll()
