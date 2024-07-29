@@ -91,7 +91,7 @@ struct DetailView: View {
             }
             .padding()
         }
-        .navigationTitle("Detail View")
+        .navigationTitle("详情")
     }
 }
 

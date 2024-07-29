@@ -28,7 +28,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .navigationTitle("Sensor Data")
+                .navigationTitle("主页")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -40,7 +40,7 @@ struct ContentView: View {
                             }
                         }) {
                             HStack {
-                                Text(isEditing ? "Cancel" : "Choose")
+                                Text(isEditing ? "取消" : "选择")
                             }
                         }
                     }
@@ -65,12 +65,12 @@ struct ContentView: View {
                             }
                             .disabled(selectedItems.isEmpty)
                             .confirmationDialog("Delete Confirmation", isPresented: $showDeleteConfirmation) {
-                                Button("Delete", role: .destructive) {
+                                Button("删除", role: .destructive) {
                                     deleteSelectedItems()
                                 }
                                 Button("Cancel", role: .cancel) {}
                             } message: {
-                                Text("Are you sure you want to delete the selected items?")
+                                Text("确定要删除吗?")
                             }
                         }
                     }
@@ -79,7 +79,7 @@ struct ContentView: View {
             }
             .padding()
             .alert(isPresented: $showingExportAlert) {
-                Alert(title: Text("Export Successful"), message: Text("Files exported to: \(exportedPath)"), dismissButton: .default(Text("OK")))
+                Alert(title: Text("导出成功"), message: Text("文件导出在: \(exportedPath)"), dismissButton: .default(Text("好的")))
             }
             .onAppear {
                 watchSessionManager.loadFromAppStorage()
@@ -100,7 +100,7 @@ struct ContentView: View {
             switch result {
             case .success(let url):
                 exportedPath = url.path
-                exportMessage = "Files exported successfully to \(exportedPath)"
+                exportMessage = "文件成功导出在: \(exportedPath)"
                 showingExportAlert = true
             case .failure(let error):
                 exportMessage = "Export failed: \(error.localizedDescription)"

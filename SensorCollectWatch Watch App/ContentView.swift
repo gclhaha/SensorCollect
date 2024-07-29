@@ -36,7 +36,7 @@ struct ContentView: View {
             }) {
                 HStack {
                     Image(systemName: timerRunning ? "pause.circle" : "play.circle")
-                    Text(timerRunning ? "Pause" : "Start")
+                    Text(timerRunning ? "暂停" : "开始")
                 }
             }
             
@@ -46,7 +46,7 @@ struct ContentView: View {
             }) {
                 HStack {
                     Image(systemName: "square.and.arrow.down")
-                    Text("Save")
+                    Text("保存")
                 }
             }
             .disabled(timeElapsed == 0 || timerRunning)
@@ -56,7 +56,7 @@ struct ContentView: View {
             }) {
                 HStack {
                     Image(systemName: "arrow.counterclockwise.circle")
-                    Text("Reset")
+                    Text("重置")
                 }
             }
             .disabled(timeElapsed == 0 || timerRunning)
