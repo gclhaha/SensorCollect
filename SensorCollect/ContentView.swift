@@ -68,7 +68,7 @@ struct ContentView: View {
                                 Button("删除", role: .destructive) {
                                     deleteSelectedItems()
                                 }
-                                Button("Cancel", role: .cancel) {}
+                                Button("取消", role: .cancel) {}
                             } message: {
                                 Text("确定要删除吗?")
                             }

@@ -19,7 +19,6 @@ struct ContentView: View {
     @StateObject private var workoutManager = WorkoutManager()
     @State private var timeFormatter = ElapsedTimeFormatter()
     var showSubseconds: Bool = true
-
     
     var body: some View {
         VStack {
@@ -67,53 +66,43 @@ struct ContentView: View {
     }
     
     func startTimer() {
-        timerRunning = true
-        motionManager.startUpdates(timeElapsed: timeElapsed)
-        workoutManager.startWorkout()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
-            timeElapsed += 0.01
-        }
-    }
-    
-    func pauseTimer() {
-        timerRunning = false
-        motionManager.stopUpdates()
-        workoutManager.stopWorkout()
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    func saveData() {
-        if WCSession.default.isReachable {
-            let sensorData = motionManager.collectData()
-            let timestamp = getCurrentTimestamp()
-            
-            let chunkSize = 50
-            let chunks = stride(from: 0, to: sensorData.count, by: chunkSize).map {
-                Array(sensorData[$0..<min($0 + chunkSize, sensorData.count)])
-            }
-            
-            for chunk in chunks {
-                let message: [String: Any] = ["timestamp": timestamp, "data": chunk]
-                WCSession.default.transferUserInfo(message)
-            }
-        }
-    }
-    
-    func resetTimer() {
-        timerRunning = false
-        motionManager.stopUpdates()
-        workoutManager.stopWorkout()
-        timer?.invalidate()
-        timer = nil
-        timeElapsed = 0.0
-    }
-    
-    func getCurrentTimestamp() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return dateFormatter.string(from: Date())
-    }
+         timerRunning = true
+         motionManager.startUpdates(timeElapsed: timeElapsed)
+         workoutManager.startWorkout()
+         timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
+             timeElapsed += 0.01
+         }
+     }
+     
+     func pauseTimer() {
+         timerRunning = false
+         motionManager.stopUpdates()
+         workoutManager.stopWorkout()
+         timer?.invalidate()
+         timer = nil
+     }
+     
+     func saveData() {
+         if WCSession.default.isReachable, let fileURL = motionManager.getDataFile() {
+             let timestamp = getCurrentTimestamp()
+             WCSession.default.transferFile(fileURL, metadata: ["timestamp": timestamp])
+         }
+     }
+     
+     func resetTimer() {
+         timerRunning = false
+         motionManager.stopUpdates()
+         workoutManager.stopWorkout()
+         timer?.invalidate()
+         timer = nil
+         timeElapsed = 0.0
+     }
+     
+     func getCurrentTimestamp() -> String {
+         let dateFormatter = DateFormatter()
+         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+         return dateFormatter.string(from: Date())
+     }
     
     func sendSensorDataInChunks(_ sensorData: [[String: Double]], timestamp: String) {
         let chunkSize = 100 // 每次发送100条数据
